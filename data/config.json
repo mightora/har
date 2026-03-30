@@ -1,0 +1,114 @@
+{
+  "site": {
+    "name": "HAR File Analyser",
+    "tagline": "Analyse. Understand. Optimise.",
+    "description": "A privacy-first, browser-based HAR file analyser. Understand performance, security risks, and request patterns — all processed locally, never uploaded.",
+    "url": "https://mightora.github.io/har",
+    "version": "1.0.0"
+  },
+  "hero": {
+    "headline": "Analyse HAR Files Instantly",
+    "subheadline": "Privacy-first. Browser-based. No uploads.",
+    "description": "Drop your HAR file and get instant insights into performance bottlenecks, security risks, cookie behaviour, JWT tokens, and request patterns — all processed locally in your browser.",
+    "cta_primary": "Analyse a HAR File",
+    "cta_secondary": "Learn How to Capture a HAR"
+  },
+  "privacy": {
+    "headline": "Your Data Never Leaves Your Browser",
+    "points": [
+      "All processing happens locally in your browser",
+      "No data is uploaded to any server",
+      "Nothing is stored or persisted after you close the tab",
+      "HAR files can contain sensitive data — cookies, tokens, headers. Handle with care."
+    ]
+  },
+  "author": {
+    "name": "Ian Tweedie",
+    "handle": "TechTweedie",
+    "role": "Microsoft MVP | Power Platform & Developer Tools Advocate",
+    "bio": "Ian Tweedie is a Microsoft MVP and founder of Mightora — a suite of free tools for the Power Platform and developer community. He writes, speaks, and builds to make technology more accessible to everyone.",
+    "image": "https://raw.githubusercontent.com/TechTweedie/techtweedie.github.io/v2/assets/images/author/ian-tweedie-presenting-4.png",
+    "links": [
+      { "label": "Blog", "url": "https://techtweedie.github.io", "icon": "🌐" },
+      { "label": "GitHub", "url": "https://github.com/itweedie", "icon": "🐙" },
+      { "label": "YouTube", "url": "https://youtube.com/@techtweedie", "icon": "▶️" },
+      { "label": "LinkedIn", "url": "https://go.iantweedie.biz/LinkedIn-Linktree", "icon": "💼" },
+      { "label": "Mightora", "url": "https://mightora.io", "icon": "🚀" }
+    ]
+  },
+  "footer": {
+    "brands": [
+      {
+        "name": "mightora.io",
+        "url": "https://mightora.io",
+        "logo": "https://raw.githubusercontent.com/mightora/mightora.io/main/static/images/mightoraIoLogo4-200x900.png",
+        "description": "Free tools for the Power Platform community"
+      },
+      {
+        "name": "Tech Tweedie",
+        "url": "https://techtweedie.github.io",
+        "logo": "https://raw.githubusercontent.com/mightora/mightora.io/main/static/images/TechTweedie_bw.png",
+        "description": "Technical blog and tutorials by Ian Tweedie"
+      },
+      {
+        "name": "Tweed.technology",
+        "url": "https://tweed.technology",
+        "logo": "https://raw.githubusercontent.com/mightora/mightora.io/main/static/images/tweedTechnologyLogoLight.png",
+        "description": "Technology consulting by Ian Tweedie"
+      }
+    ],
+    "sections": [
+      {
+        "title": "Site",
+        "column": 1,
+        "links": [
+          { "name": "HAR Analyser", "url": "#upload" },
+          { "name": "How to Capture", "url": "#guide" },
+          { "name": "Privacy", "url": "#privacy" },
+          { "name": "About", "url": "#author" },
+          { "name": "Mightora Tools ↗", "url": "https://mightora.io/tools/" }
+        ]
+      },
+      {
+        "title": "Mightora Tools",
+        "column": 2,
+        "links": [
+          { "name": "Pipeline Tools ↗", "url": "https://mightora.io/tools/cicd/" },
+          { "name": "PCF Controls ↗", "url": "https://mightora.io/tools/pcf/" },
+          { "name": "Power Automate Connectors ↗", "url": "https://mightora.io/tools/power-automate-connectors/" },
+          { "name": "Developer Tools ↗", "url": "https://mightora.io/tools/developer/" },
+          { "name": "WiFi Captive Portal Helper ↗", "url": "http://connect.mightora.io/" }
+        ]
+      },
+      {
+        "title": "VS Code Extensions",
+        "column": 2,
+        "links": [
+          { "name": "Power Platform Docs ↗", "url": "https://marketplace.visualstudio.com/items?itemName=mightoraio.mightora-power-platform-devOps-extension" },
+          { "name": "Playwright for Power Platform ↗", "url": "https://marketplace.visualstudio.com/items?itemName=mightoraio.mightora-playwright-for-power-platform" },
+          { "name": "Upload MD To Wiki ↗", "url": "https://marketplace.visualstudio.com/items?itemName=mightoraio.upload-md-to-wiki" }
+        ]
+      },
+      {
+        "title": "Community",
+        "column": 3,
+        "links": [
+          { "name": "GitHub ↗", "url": "https://github.com/mightora" },
+          { "name": "YouTube ↗", "url": "https://youtube.com/@techtweedie" },
+          { "name": "Medium ↗", "url": "https://medium.com/@ian.tweedie" },
+          { "name": "LinkedIn ↗", "url": "https://go.iantweedie.biz/LinkedIn-Linktree" },
+          { "name": "Power Platform Clinic ↗", "url": "https://powerplatformclinic.github.io" }
+        ]
+      },
+      {
+        "title": "Contact",
+        "column": 3,
+        "links": [
+          { "name": "Contact ↗", "url": "https://iantweedie.biz" },
+          { "name": "Status Page ↗", "url": "https://stats.uptimerobot.com/3EPW8gBu4N" },
+          { "name": "All Links ↗", "url": "https://linktr.ee/itweedie" }
+        ]
+      }
+    ]
+  }
+}
