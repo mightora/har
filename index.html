@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HAR File Analyser — Privacy-first, browser-based HAR analysis tool. Instant performance, security, and request insights. No uploads. No tracking.">
+  <meta name="keywords" content="HAR analyser, HAR file, network analysis, performance, security, JWT, cookies, browser tool, Mightora">
+  <meta property="og:title" content="HAR File Analyser | Mightora">
+  <meta property="og:description" content="Analyse HAR files instantly. Privacy-first. All processing in your browser.">
+  <meta property="og:type" content="website">
+  <title>HAR File Analyser | Mightora</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+</head>
+<body>
+
+<!-- ── Navigation ────────────────────────────────────────────────────────── -->
+<nav class="nav" aria-label="Main navigation">
+  <div class="container nav-inner">
+    <a href="#" class="nav-brand" aria-label="HAR File Analyser Home">
+      <div class="nav-brand-icon" aria-hidden="true">🔍</div>
+      <span>HAR Analyser</span>
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="#upload">Analyse</a></li>
+      <li><a href="#guide">How To</a></li>
+      <li><a href="#privacy">Privacy</a></li>
+      <li><a href="#author">About</a></li>
+      <li><a href="https://mightora.io" target="_blank" rel="noopener noreferrer" class="nav-cta">Mightora ↗</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────────────────────── -->
+<section class="hero" aria-labelledby="hero-headline">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span aria-hidden="true">🔍</span>
+        Free Browser Tool · No Uploads · Privacy-First
+      </div>
+      <h1 id="hero-headline">Analyse HAR Files Instantly</h1>
+      <p class="hero-sub" id="hero-subheadline">Privacy-first. Browser-based. No uploads.</p>
+      <p id="hero-description">Drop your HAR file and get instant insights into performance bottlenecks, security risks, cookie behaviour, JWT tokens, and request patterns — all processed locally in your browser.</p>
+      <div class="hero-actions">
+        <a href="#upload" class="btn btn-primary">🚀 Analyse a HAR File</a>
+        <a href="#guide" class="btn btn-secondary">📚 Learn How to Capture a HAR</a>
+      </div>
+      <div class="hero-trust" role="list">
+        <div class="trust-item" role="listitem"><span aria-hidden="true">✅</span> No data uploaded</div>
+        <div class="trust-item" role="listitem"><span aria-hidden="true">🔒</span> 100% local processing</div>
+        <div class="trust-item" role="listitem"><span aria-hidden="true">⚡</span> Instant results</div>
+        <div class="trust-item" role="listitem"><span aria-hidden="true">🆓</span> Completely free</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Upload ────────────────────────────────────────────────────────────── -->
+<section class="section" id="upload" aria-labelledby="upload-heading">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Get Started</span>
+      <h2 id="upload-heading">Upload Your HAR File</h2>
+      <p>Select or drag and drop a HAR file to begin analysis. Everything runs in your browser — nothing is ever sent to a server.</p>
+    </div>
+
+    <!-- Privacy Banner -->
+    <div class="privacy-banner" role="note" aria-label="Privacy information">
+      <div class="privacy-banner-header">
+        <span aria-hidden="true">🔒</span>
+        Privacy First — Your Data Stays Here
+      </div>
+      <ul class="privacy-points" id="privacy-points" aria-label="Privacy guarantees">
+        <li class="privacy-point"><span class="privacy-icon" aria-hidden="true">🔒</span>All processing happens locally in your browser</li>
+        <li class="privacy-point"><span class="privacy-icon" aria-hidden="true">🚫</span>No data is uploaded to any server</li>
+        <li class="privacy-point"><span class="privacy-icon" aria-hidden="true">🗑️</span>Nothing is stored after you close the tab</li>
+        <li class="privacy-point"><span class="privacy-icon" aria-hidden="true">⚠️</span>HAR files can contain sensitive data — handle with care</li>
+      </ul>
+    </div>
+
+    <!-- Upload Box -->
+    <div class="upload-section">
+      <div
+        class="dropzone"
+        id="dropzone"
+        role="button"
+        tabindex="0"
+        aria-label="Drop zone — drag and drop a HAR file here or click to browse"
+      >
+        <span class="dropzone-icon" aria-hidden="true">📂</span>
+        <h3>Drag &amp; drop your HAR file here</h3>
+        <p class="text-muted">Supports .har files from Chrome, Edge, Firefox, and Safari</p>
+        <button class="btn btn-primary" id="file-picker-btn" type="button">Choose File</button>
+      </div>
+
+      <input
+        type="file"
+        id="file-input"
+        accept=".har,application/json,application/har+json"
+        style="display:none"
+        aria-label="File input for HAR file"
+      >
+
+      <div id="upload-spinner" role="status" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <span>Parsing HAR file…</span>
+      </div>
+
+      <div id="upload-status" class="upload-status" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Analyser ───────────────────────────────────────────────────────────── -->
+<section class="section" id="analyser-section" aria-labelledby="analyser-heading" style="display:none; padding-top: 0;">
+  <div class="container">
+
+    <div class="analyser-header">
+      <div>
+        <span class="section-label">Analysis</span>
+        <h2 id="analyser-heading">HAR Analysis Results</h2>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="document.getElementById('file-input').click()">📂 Load Another File</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs" role="tablist" aria-label="Analysis sections">
+      <button data-tab="summary" class="tab-active" role="tab" aria-selected="true" aria-controls="panel-summary">📊 Summary</button>
+      <button data-tab="insights" role="tab" aria-selected="false" aria-controls="panel-insights">📈 Visual Insights</button>
+      <button data-tab="requests" role="tab" aria-selected="false" aria-controls="panel-requests">🌐 Request Explorer</button>
+      <button data-tab="cookies" role="tab" aria-selected="false" aria-controls="panel-cookies">🍪 Cookies</button>
+      <button data-tab="jwt" role="tab" aria-selected="false" aria-controls="panel-jwt">🔑 JWT Tokens</button>
+      <button data-tab="auth" role="tab" aria-selected="false" aria-controls="panel-auth">🛡️ Auth &amp; Security</button>
+      <button data-tab="errors" role="tab" aria-selected="false" aria-controls="panel-errors">❌ Errors</button>
+      <button data-tab="perf" role="tab" aria-selected="false" aria-controls="panel-perf">⚡ Performance</button>
+      <button data-tab="infra" role="tab" aria-selected="false" aria-controls="panel-infra">☁️ Infrastructure</button>
+    </div>
+
+    <!-- ── Summary Tab ── -->
+    <div data-tab-panel="summary" id="panel-summary" role="tabpanel" aria-labelledby="tab-summary">
+      <div id="summary-cards"></div>
+    </div>
+
+    <!-- ── Insights Tab ── -->
+    <div data-tab-panel="insights" id="panel-insights" role="tabpanel" aria-labelledby="tab-insights">
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">Status Code Distribution</div>
+          <div class="chart-donut-wrap">
+            <canvas id="chart-status" aria-label="Status code distribution chart"></canvas>
+            <div class="legend" id="chart-status-legend" aria-label="Status code legend"></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Resource Type Breakdown</div>
+          <div class="chart-donut-wrap">
+            <canvas id="chart-resources" aria-label="Resource type breakdown chart"></canvas>
+            <div class="legend" id="chart-resources-legend" aria-label="Resource type legend"></div>
+          </div>
+        </div>
+        <div class="chart-card" style="grid-column: span 2;">
+          <div class="chart-title">Requests per Domain (Top 8)</div>
+          <canvas id="chart-domains" aria-label="Requests per domain chart"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Request Duration Distribution</div>
+          <canvas id="chart-duration" aria-label="Request duration distribution chart"></canvas>
+        </div>
+        <div class="chart-card" style="grid-column: span 2;">
+          <div class="chart-title">Slowest Endpoints</div>
+          <canvas id="chart-slowest" aria-label="Slowest endpoints chart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Requests Tab ── -->
+    <div data-tab-panel="requests" id="panel-requests" role="tabpanel" aria-labelledby="tab-requests">
+      <div class="request-controls">
+        <input
+          type="search"
+          id="req-search"
+          class="search-input"
+          placeholder="🔍 Search URLs, domains…"
+          aria-label="Search requests by URL or domain"
+        >
+        <select id="req-filter-status" class="filter-select" aria-label="Filter by status code group">
+          <option value="all">All Status Codes</option>
+          <option value="2xx">2xx Success</option>
+          <option value="3xx">3xx Redirects</option>
+          <option value="4xx">4xx Client Errors</option>
+          <option value="5xx">5xx Server Errors</option>
+          <option value="error">All Errors</option>
+        </select>
+        <select id="req-filter-domain" class="filter-select" aria-label="Filter by domain">
+          <option value="all">All Domains</option>
+        </select>
+        <select id="req-filter-type" class="filter-select" aria-label="Filter by resource type">
+          <option value="all">All Types</option>
+        </select>
+        <select id="req-sort" class="filter-select" aria-label="Sort requests">
+          <option value="index:asc">Order: Original</option>
+          <option value="totalTime:desc">Slowest First</option>
+          <option value="totalTime:asc">Fastest First</option>
+          <option value="responseSize:desc">Largest First</option>
+          <option value="status:asc">Status Code</option>
+          <option value="domain:asc">Domain A-Z</option>
+        </select>
+        <span id="request-count" class="request-count" aria-live="polite"></span>
+      </div>
+      <div class="table-wrap">
+        <table class="request-table" aria-label="HTTP requests table">
+          <thead>
+            <tr>
+              <th scope="col">Method</th>
+              <th scope="col">URL</th>
+              <th scope="col">Domain</th>
+              <th scope="col">Status</th>
+              <th scope="col">Type</th>
+              <th scope="col">Duration</th>
+              <th scope="col">Size</th>
+            </tr>
+          </thead>
+          <tbody id="request-tbody"></tbody>
+        </table>
+      </div>
+      <div id="request-pagination" role="navigation" aria-label="Request table pagination"></div>
+      <!-- Detail Panel -->
+      <div id="request-detail-panel" aria-label="Request detail panel"></div>
+    </div>
+
+    <!-- ── Cookies Tab ── -->
+    <div data-tab-panel="cookies" id="panel-cookies" role="tabpanel" aria-labelledby="tab-cookies">
+      <div class="card" style="margin-bottom: 16px;">
+        <p style="color: var(--text-secondary);">
+          🍪 All cookies found in request and response headers, grouped by domain. Security attributes are highlighted to help identify potential issues.
+        </p>
+      </div>
+      <div id="cookie-list"></div>
+    </div>
+
+    <!-- ── JWT Tab ── -->
+    <div data-tab-panel="jwt" id="panel-jwt" role="tabpanel" aria-labelledby="tab-jwt">
+      <div id="jwt-list"></div>
+    </div>
+
+    <!-- ── Auth/Security Tab ── -->
+    <div data-tab-panel="auth" id="panel-auth" role="tabpanel" aria-labelledby="tab-auth">
+      <div class="card" style="margin-bottom: 16px;">
+        <p style="color: var(--text-secondary);">
+          🛡️ Authentication patterns and potential security concerns detected in headers, cookies, and query parameters. Review any flagged items carefully.
+        </p>
+      </div>
+      <div id="auth-insights-list"></div>
+    </div>
+
+    <!-- ── Errors Tab ── -->
+    <div data-tab-panel="errors" id="panel-errors" role="tabpanel" aria-labelledby="tab-errors">
+      <div id="error-list"></div>
+    </div>
+
+    <!-- ── Performance Tab ── -->
+    <div data-tab-panel="perf" id="panel-perf" role="tabpanel" aria-labelledby="tab-perf">
+      <div class="charts-grid" style="margin-bottom: 32px;">
+        <div class="chart-card" style="grid-column: span 2;">
+          <div class="chart-title">⚡ Top 10 Slowest Requests</div>
+          <div id="slowest-table"></div>
+        </div>
+        <div class="chart-card" style="grid-column: span 2;">
+          <div class="chart-title">📦 Top 10 Largest Responses</div>
+          <div id="largest-table"></div>
+        </div>
+      </div>
+      <script>
+        // Performance tab rendering is handled by renderPerf() called after analysis
+      </script>
+    </div>
+
+    <!-- ── Infrastructure Tab ── -->
+    <div data-tab-panel="infra" id="panel-infra" role="tabpanel" aria-labelledby="tab-infra">
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="card-title">🔄 Cache Performance</div>
+          <div id="cache-insights"></div>
+        </div>
+        <div class="chart-card">
+          <div class="card-title">☁️ Infrastructure Detected</div>
+          <div id="infra-insights"></div>
+        </div>
+        <div class="chart-card" style="grid-column: span 2;">
+          <div class="card-title">🌍 Third-Party Domains</div>
+          <div id="third-party-domains"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Guide Section ──────────────────────────────────────────────────────── -->
+<section class="section" id="guide" aria-labelledby="guide-heading">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">How To</span>
+      <h2 id="guide-heading">How to Capture a HAR File</h2>
+      <p>A HAR (HTTP Archive) file records all network activity in your browser. Follow these steps to capture one.</p>
+    </div>
+
+    <div class="guide-grid">
+      <!-- Chrome -->
+      <div class="guide-card">
+        <div class="guide-card-icon" aria-hidden="true">🌐</div>
+        <h3 style="margin-bottom: 16px;">Google Chrome</h3>
+        <ol class="guide-steps">
+          <li>Open Chrome DevTools: press <code>F12</code> or <code>Ctrl+Shift+I</code> (Windows) / <code>Cmd+Option+I</code> (Mac)</li>
+          <li>Click the <strong>Network</strong> tab</li>
+          <li>Ensure recording is active (red circle icon)</li>
+          <li>Check <strong>Preserve log</strong> to capture across navigations</li>
+          <li>Reproduce the issue or navigate to the page</li>
+          <li>Right-click any request → <strong>Save all as HAR with content</strong></li>
+        </ol>
+      </div>
+
+      <!-- Edge -->
+      <div class="guide-card">
+        <div class="guide-card-icon" aria-hidden="true">🔷</div>
+        <h3 style="margin-bottom: 16px;">Microsoft Edge</h3>
+        <ol class="guide-steps">
+          <li>Open DevTools: press <code>F12</code> or <code>Ctrl+Shift+I</code></li>
+          <li>Click the <strong>Network</strong> tab</li>
+          <li>Enable recording (red button)</li>
+          <li>Check <strong>Preserve log</strong></li>
+          <li>Reproduce the issue or load the page</li>
+          <li>Click the <strong>Export HAR</strong> button (download icon) in the toolbar</li>
+        </ol>
+      </div>
+
+      <!-- Firefox -->
+      <div class="guide-card">
+        <div class="guide-card-icon" aria-hidden="true">🦊</div>
+        <h3 style="margin-bottom: 16px;">Mozilla Firefox</h3>
+        <ol class="guide-steps">
+          <li>Open DevTools: press <code>F12</code> or <code>Ctrl+Shift+I</code></li>
+          <li>Click the <strong>Network</strong> tab</li>
+          <li>Reproduce the issue or navigate to the page</li>
+          <li>Right-click any request in the list</li>
+          <li>Select <strong>Save All As HAR</strong></li>
+          <li>Save the file to your computer</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- What is a HAR file -->
+    <div class="har-info-grid">
+      <div class="har-info-card">
+        <h4>📄 What is a HAR file?</h4>
+        <p>A JSON-formatted archive that records all HTTP requests and responses made by your browser — including headers, timings, cookies, and body content.</p>
+      </div>
+      <div class="har-info-card">
+        <h4>🔧 Why is it useful?</h4>
+        <p>HAR files help diagnose slow page loads, failed requests, authentication problems, and performance bottlenecks by giving a complete picture of network activity.</p>
+      </div>
+      <div class="har-info-card">
+        <h4>⚠️ Sensitive data</h4>
+        <p>HAR files can contain cookies, auth tokens, passwords, and personal data. Treat them as confidential. Never share them publicly or send them to untrusted parties.</p>
+      </div>
+      <div class="har-info-card">
+        <h4>🔒 This tool is safe</h4>
+        <p>HAR Analyser processes your file entirely in your browser. Nothing is uploaded. You can even use it offline after the page has loaded.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Privacy Section ────────────────────────────────────────────────────── -->
+<section class="section privacy-section-bg" id="privacy" aria-labelledby="privacy-heading">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Privacy</span>
+      <h2 id="privacy-heading">Your Privacy is Non-Negotiable</h2>
+      <p>HAR files can contain sensitive information. We've designed this tool to ensure your data never leaves your control.</p>
+    </div>
+
+    <div class="privacy-cards">
+      <div class="privacy-card">
+        <div class="privacy-card-icon" aria-hidden="true">🔒</div>
+        <h4>Local Only</h4>
+        <p>All HAR parsing and analysis runs entirely in your browser using JavaScript. Zero server involvement.</p>
+      </div>
+      <div class="privacy-card">
+        <div class="privacy-card-icon" aria-hidden="true">🚫</div>
+        <h4>No Uploads</h4>
+        <p>Your file is never transmitted anywhere. It stays on your machine, in memory, until you close or refresh the tab.</p>
+      </div>
+      <div class="privacy-card">
+        <div class="privacy-card-icon" aria-hidden="true">🗑️</div>
+        <h4>No Storage</h4>
+        <p>Nothing is written to localStorage, sessionStorage, IndexedDB, or cookies. The page reloads clean every time.</p>
+      </div>
+      <div class="privacy-card">
+        <div class="privacy-card-icon" aria-hidden="true">👁️</div>
+        <h4>Open Source</h4>
+        <p>This tool is open source on GitHub. You can inspect every line of code to verify these privacy guarantees.</p>
+      </div>
+    </div>
+
+    <div class="privacy-warning" role="note">
+      <p>
+        <strong>⚠️ Handle HAR files with care.</strong>
+        HAR files may contain authentication tokens, session cookies, API keys, passwords, and personal data.
+        Never share a HAR file publicly, send it to an untrusted party, or upload it to an online analyser you don't trust.
+        This tool is specifically designed so that never needs to happen.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── Author Section ────────────────────────────────────────────────────── -->
+<section class="section author-section-bg" id="author" aria-labelledby="author-heading">
+  <div class="container">
+    <div class="section-header" style="margin-bottom: 32px;">
+      <span class="section-label" style="background:rgba(129,140,248,.2);color:#818cf8;border:1px solid rgba(129,140,248,.2);">Built By</span>
+      <h2 id="author-heading" style="color:white;">Meet the Builder</h2>
+    </div>
+    <div id="author-section">
+      <!-- Rendered dynamically from config.json -->
+      <div class="author-card">
+        <div class="author-image-wrap">
+          <img
+            src="https://raw.githubusercontent.com/TechTweedie/techtweedie.github.io/v2/assets/images/author/ian-tweedie-presenting-4.png"
+            alt="Ian Tweedie presenting at a conference"
+            class="author-image"
+            id="author-static-img"
+          >
+        </div>
+        <div class="author-info">
+          <div class="author-handle">TechTweedie</div>
+          <h3 class="author-name">Ian Tweedie</h3>
+          <div class="author-role">Microsoft MVP | Power Platform &amp; Developer Tools Advocate</div>
+          <p class="author-bio">Ian Tweedie is a Microsoft MVP and founder of Mightora — a suite of free tools for the Power Platform and developer community. He writes, speaks, and builds to make technology more accessible to everyone.</p>
+          <div class="author-links">
+            <a href="https://techtweedie.github.io" target="_blank" rel="noopener noreferrer" class="author-link">🌐 Blog</a>
+            <a href="https://github.com/itweedie" target="_blank" rel="noopener noreferrer" class="author-link">🐙 GitHub</a>
+            <a href="https://youtube.com/@techtweedie" target="_blank" rel="noopener noreferrer" class="author-link">▶️ YouTube</a>
+            <a href="https://go.iantweedie.biz/LinkedIn-Linktree" target="_blank" rel="noopener noreferrer" class="author-link">💼 LinkedIn</a>
+            <a href="https://mightora.io" target="_blank" rel="noopener noreferrer" class="author-link">🚀 Mightora</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ─────────────────────────────────────────────────────────────── -->
+<footer class="site-footer" aria-label="Site footer">
+  <div class="container">
+    <!-- Brands -->
+    <div class="footer-brands">
+      <div class="footer-brands-label">Part of the Mightora Ecosystem</div>
+      <div id="footer-brands">
+        <!-- Rendered dynamically -->
+        <a href="https://mightora.io" target="_blank" rel="noopener noreferrer" class="brand-card">
+          <img src="https://raw.githubusercontent.com/mightora/mightora.io/main/static/images/mightoraIoLogo4-200x900.png" alt="mightora.io" class="brand-logo" onerror="this.style.display='none'">
+          <span class="brand-desc">Free tools for the Power Platform community</span>
+        </a>
+        <a href="https://techtweedie.github.io" target="_blank" rel="noopener noreferrer" class="brand-card">
+          <img src="https://raw.githubusercontent.com/mightora/mightora.io/main/static/images/TechTweedie_bw.png" alt="Tech Tweedie" class="brand-logo" onerror="this.style.display='none'">
+          <span class="brand-desc">Technical blog and tutorials by Ian Tweedie</span>
+        </a>
+        <a href="https://tweed.technology" target="_blank" rel="noopener noreferrer" class="brand-card">
+          <img src="https://raw.githubusercontent.com/mightora/mightora.io/main/static/images/tweedTechnologyLogoLight.png" alt="Tweed.technology" class="brand-logo" onerror="this.style.display='none'">
+          <span class="brand-desc">Technology consulting by Ian Tweedie</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Navigation Columns -->
+    <div class="footer-main">
+      <div id="footer-columns">
+        <!-- Rendered dynamically from config.json -->
+        <div class="footer-col">
+          <div class="footer-section">
+            <h4 class="footer-section-title">Site</h4>
+            <ul class="footer-links">
+              <li><a href="#upload">HAR Analyser</a></li>
+              <li><a href="#guide">How to Capture</a></li>
+              <li><a href="#privacy">Privacy</a></li>
+              <li><a href="#author">About</a></li>
+              <li><a href="https://mightora.io/tools/" target="_blank" rel="noopener noreferrer">Mightora Tools ↗</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-section">
+            <h4 class="footer-section-title">Mightora Tools</h4>
+            <ul class="footer-links">
+              <li><a href="https://mightora.io/tools/cicd/" target="_blank" rel="noopener noreferrer">Pipeline Tools ↗</a></li>
+              <li><a href="https://mightora.io/tools/pcf/" target="_blank" rel="noopener noreferrer">PCF Controls ↗</a></li>
+              <li><a href="https://mightora.io/tools/power-automate-connectors/" target="_blank" rel="noopener noreferrer">Power Automate Connectors ↗</a></li>
+              <li><a href="https://mightora.io/tools/developer/" target="_blank" rel="noopener noreferrer">Developer Tools ↗</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4 class="footer-section-title">VS Code Extensions</h4>
+            <ul class="footer-links">
+              <li><a href="https://marketplace.visualstudio.com/items?itemName=mightoraio.mightora-power-platform-devOps-extension" target="_blank" rel="noopener noreferrer">Power Platform Docs ↗</a></li>
+              <li><a href="https://marketplace.visualstudio.com/items?itemName=mightoraio.mightora-playwright-for-power-platform" target="_blank" rel="noopener noreferrer">Playwright for Power Platform ↗</a></li>
+              <li><a href="https://marketplace.visualstudio.com/items?itemName=mightoraio.upload-md-to-wiki" target="_blank" rel="noopener noreferrer">Upload MD To Wiki ↗</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-section">
+            <h4 class="footer-section-title">Community</h4>
+            <ul class="footer-links">
+              <li><a href="https://github.com/mightora" target="_blank" rel="noopener noreferrer">GitHub ↗</a></li>
+              <li><a href="https://youtube.com/@techtweedie" target="_blank" rel="noopener noreferrer">YouTube ↗</a></li>
+              <li><a href="https://medium.com/@ian.tweedie" target="_blank" rel="noopener noreferrer">Medium ↗</a></li>
+              <li><a href="https://go.iantweedie.biz/LinkedIn-Linktree" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+              <li><a href="https://powerplatformclinic.github.io" target="_blank" rel="noopener noreferrer">Power Platform Clinic ↗</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4 class="footer-section-title">Contact</h4>
+            <ul class="footer-links">
+              <li><a href="https://iantweedie.biz" target="_blank" rel="noopener noreferrer">Contact ↗</a></li>
+              <li><a href="https://stats.uptimerobot.com/3EPW8gBu4N" target="_blank" rel="noopener noreferrer">Status Page ↗</a></li>
+              <li><a href="https://linktr.ee/itweedie" target="_blank" rel="noopener noreferrer">All Links ↗</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom -->
+    <div class="footer-bottom">
+      <div class="footer-copyright">
+        &copy; <span id="footer-year"></span> Mightora · HAR File Analyser
+      </div>
+      <div class="footer-made-with">
+        Made with ❤️ by <a href="https://techtweedie.github.io" target="_blank" rel="noopener noreferrer" style="color:#818cf8;">TechTweedie</a>
+        · <a href="https://github.com/mightora/har" target="_blank" rel="noopener noreferrer" style="color:#818cf8;">Open Source ↗</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ── Scripts ────────────────────────────────────────────────────────────── -->
+<script type="module">
+  import { UI } from './assets/js/ui.js';
+  import { Analyser } from './assets/js/analyser.js';
+
+  // Dynamic year
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  // Handle static author image load error gracefully
+  const staticAuthorImg = document.getElementById('author-static-img');
+  if (staticAuthorImg) {
+    staticAuthorImg.addEventListener('error', () => { staticAuthorImg.style.display = 'none'; });
+  }
+
+  // Extend UI to handle performance tab and third-party domains
+  const _init = UI.init;
+
+  function renderPerf(analysis) {
+    const slowestEl = document.getElementById('slowest-table');
+    const largestEl = document.getElementById('largest-table');
+
+    if (slowestEl) {
+      slowestEl.innerHTML = renderTopTable(analysis.slowest, [
+        { key: 'method', label: 'Method' },
+        { key: 'url', label: 'URL', truncate: true, mono: true },
+        { key: 'status', label: 'Status' },
+        { key: 'totalTime', label: 'Duration', format: v => Math.round(v) + 'ms', colorFn: v => v > 3000 ? 'text-error' : v > 1000 ? 'text-warning' : '' }
+      ]);
+    }
+
+    if (largestEl) {
+      largestEl.innerHTML = renderTopTable(analysis.largest, [
+        { key: 'method', label: 'Method' },
+        { key: 'url', label: 'URL', truncate: true, mono: true },
+        { key: 'status', label: 'Status' },
+        { key: 'mimeType', label: 'Type' },
+        { key: 'responseSize', label: 'Size', format: v => formatBytes(v) }
+      ]);
+    }
+
+    const thirdPartyEl = document.getElementById('third-party-domains');
+    if (thirdPartyEl && analysis.thirdPartyDomains) {
+      const { firstParty, thirdParty, primaryDomain } = analysis.thirdPartyDomains;
+      thirdPartyEl.innerHTML = `
+        <p style="margin-bottom: 16px; color: var(--text-secondary); font-size: .875rem;">
+          Primary domain: <strong>${escapeHtml(primaryDomain || 'unknown')}</strong> ·
+          ${firstParty.length} first-party domain(s) ·
+          <span style="color: var(--warning);">${thirdParty.length} third-party domain(s)</span>
+        </p>
+        ${thirdParty.length ? `
+          <h4 style="margin-bottom: 10px;">Third-Party Domains</h4>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
+            ${thirdParty.slice(0, 30).map(d => `
+              <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 14px;font-size:.8rem;">
+                <strong>${escapeHtml(d.domain)}</strong>
+                <span style="color:var(--text-muted);margin-left:6px;">${d.count} req</span>
+              </div>
+            `).join('')}
+          </div>
+        ` : '<p style="color:var(--success);">✅ No third-party domains detected.</p>'}
+        ${firstParty.length ? `
+          <h4 style="margin-bottom: 10px;">First-Party Domains</h4>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;">
+            ${firstParty.map(d => `
+              <div style="background:#dcfce7;border:1px solid #86efac;border-radius:var(--radius-sm);padding:8px 14px;font-size:.8rem;color:#15803d;">
+                <strong>${escapeHtml(d.domain)}</strong>
+                <span style="margin-left:6px;">${d.count} req</span>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+      `;
+    }
+  }
+
+  function renderTopTable(entries, cols) {
+    if (!entries || !entries.length) return '<p class="text-muted">No data available.</p>';
+    return `
+      <div class="table-wrap">
+        <table class="request-table">
+          <thead>
+            <tr>${cols.map(c => `<th>${escapeHtml(c.label)}</th>`).join('')}</tr>
+          </thead>
+          <tbody>
+            ${entries.map(e => `
+              <tr>
+                ${cols.map(c => {
+                  let val = e[c.key] || '';
+                  let formatted = c.format ? c.format(val) : val;
+                  let cls = c.colorFn ? c.colorFn(val) : '';
+                  if (c.truncate) {
+                    try { const u = new URL(e.url); formatted = u.pathname || e.url; } catch(_) {}
+                    formatted = formatted.length > 60 ? '…' + formatted.slice(-58) : formatted;
+                  }
+                  if (c.key === 'method') return `<td><span class="badge badge--method badge--${escapeHtml(String(val).toLowerCase())}">${escapeHtml(String(val))}</span></td>`;
+                  if (c.key === 'status') return `<td><span class="badge badge--status badge--${statusClass(val)}">${escapeHtml(String(val))}</span></td>`;
+                  return `<td class="${cls}${c.mono ? ' url-cell' : ''}" title="${escapeHtml(String(e[c.key] || ''))}">${escapeHtml(String(formatted))}</td>`;
+                }).join('')}
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+  }
+
+  function formatBytes(bytes) {
+    if (!bytes || bytes <= 0) return '0 B';
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return (bytes / Math.pow(1024, i)).toFixed(i > 0 ? 1 : 0) + ' ' + sizes[i];
+  }
+
+  function statusClass(status) {
+    if (status >= 500) return '5xx';
+    if (status >= 400) return '4xx';
+    if (status >= 300) return '3xx';
+    if (status >= 200) return '2xx';
+    return 'other';
+  }
+
+  // Hook into tab switching to render perf tab
+  document.querySelectorAll('[data-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.tab === 'perf' && window.__harAnalysis) {
+        renderPerf(window.__harAnalysis);
+      }
+      if (btn.dataset.tab === 'infra' && window.__harAnalysis) {
+        renderPerf(window.__harAnalysis); // also updates third-party
+      }
+    });
+  });
+
+  // Expose analysis for perf tab
+  const origInit = UI.init;
+  UI.init = function() {
+    origInit();
+  };
+
+  // Intercept file processing to store analysis globally
+  const origFileInput = document.getElementById('file-input');
+  if (origFileInput) {
+    origFileInput.addEventListener('change', () => {});
+  }
+
+  // Monkey-patch to capture analysis results for perf tab
+  // We do this by observing analyser-section visibility
+  const analyserSection = document.getElementById('analyser-section');
+  const observer = new MutationObserver(() => {
+    if (analyserSection.style.display !== 'none' && !window.__perfRendered) {
+      // Give a small delay for state to settle
+      setTimeout(() => {
+        if (window.__harAnalysis) {
+          renderPerf(window.__harAnalysis);
+          window.__perfRendered = false; // allow re-render
+        }
+      }, 100);
+    }
+  });
+  observer.observe(analyserSection, { attributes: true, attributeFilter: ['style'] });
+
+  UI.init();
+</script>
+
+<!-- Hook to capture analysis results for performance tab -->
+<script type="module">
+  // After UI processes a file, store analysis in window for perf tab
+  import { HarParser } from './assets/js/har-parser.js';
+  import { Analyser } from './assets/js/analyser.js';
+
+  const fileInput = document.getElementById('file-input');
+  const dropzone = document.getElementById('dropzone');
+
+  function captureAnalysis(file) {
+    HarParser.parseFile(file).then(har => {
+      const entries = HarParser.extractEntries(har);
+      window.__harAnalysis = Analyser.analyse(entries);
+      window.__perfRendered = false;
+    }).catch(() => {});
+  }
+
+  if (fileInput) {
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) captureAnalysis(e.target.files[0]);
+    });
+  }
+  if (dropzone) {
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      if (e.dataTransfer.files[0]) captureAnalysis(e.dataTransfer.files[0]);
+    });
+  }
+</script>
+
+</body>
+</html>
