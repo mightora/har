@@ -1,1 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://mightora.github.io/har/</loc></url></urlset>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://har.mightora.io/</loc><lastmod>2026-10-14</lastmod></url>
+<url><loc>https://har.mightora.io/guides/how-to-analyse-har.html</loc><lastmod>2026-10-14</lastmod></url>
+<url><loc>https://har.mightora.io/guides/har-performance-timings.html</loc><lastmod>2026-10-14</lastmod></url>
+<url><loc>https://har.mightora.io/guides/offline-har-analysis.html</loc><lastmod>2026-10-14</lastmod></url>
+<url><loc>https://har.mightora.io/guides/har-security-privacy.html</loc><lastmod>2026-10-14</lastmod></url>
+</urlset>
