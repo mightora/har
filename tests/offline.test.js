@@ -48,4 +48,15 @@ test('offline ZIP is valid and embeds the exact standalone HTML',()=>{
  assert.equal(entries['har-analyser.html'],read('downloads/har-analyser.html'));
  assert.match(entries['README.txt'],/No application install or network is required/);
  assert.match(entries['LICENSE.txt'],/MIT License/);
+ const eocd=buf.length-22;
+ assert.equal(buf.readUInt32LE(eocd),0x06054b50);
+ assert.equal(buf.readUInt16LE(eocd+10),count);
+ let cdOffset=buf.readUInt32LE(eocd+16);
+ for(let i=0;i<count;i++){
+  assert.equal(buf.readUInt32LE(cdOffset),0x02014b50);
+  const localOffset=buf.readUInt32LE(cdOffset+42);
+  assert.equal(buf.readUInt32LE(localOffset),0x04034b50);
+  cdOffset+=46+buf.readUInt16LE(cdOffset+28)+buf.readUInt16LE(cdOffset+30)+buf.readUInt16LE(cdOffset+32);
+ }
+ assert.equal(cdOffset,eocd);
 });
