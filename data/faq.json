@@ -1,0 +1,22 @@
+{
+  "name": "Mightora HAR Analyser",
+  "url": "https://har.mightora.io/",
+  "questions": [
+    {
+      "question": "What is a HAR file?",
+      "answer": "An HTTP Archive (HAR) contains browser request metadata, timing, headers and potentially sensitive content."
+    },
+    {
+      "question": "Does Mightora upload my HAR?",
+      "answer": "No. The analyser processes HAR files locally in the browser."
+    },
+    {
+      "question": "Can it run offline?",
+      "answer": "Yes. Download a ZIP containing a standalone HTML file, then open the HTML in your browser."
+    },
+    {
+      "question": "Can sanitised exports identify users?",
+      "answer": "Possibly. Hosts and some paths remain and should be reviewed."
+    }
+  ]
+}
