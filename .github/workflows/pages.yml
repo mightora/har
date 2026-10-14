@@ -26,6 +26,7 @@ jobs:
           with ZipFile("downloads/mightora-har-offline.zip", "w", compression=ZIP_DEFLATED) as z:
               z.write("downloads/har-analyser.html", arcname="har-analyser.html")
               z.write("downloads/README-OFFLINE.txt", arcname="README.txt")
+              z.write("LICENSE", arcname="LICENSE.txt")
           PY
       - uses: actions/upload-pages-artifact@v3
         with:
