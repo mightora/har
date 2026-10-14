@@ -60,3 +60,24 @@ test('offline ZIP is valid and embeds the exact standalone HTML',()=>{
  }
  assert.equal(cdOffset,eocd);
 });
+
+test('both editions explain how to check network activity independently',()=>{
+ for(const p of ['index.html','downloads/har-analyser.html']){
+  const html=read(p);
+  assert.match(html,/id="network-audit"/);
+  assert.match(html,/id="refresh-network"/);
+  assert.match(html,/(?:F12|Ctrl\+Shift\+I)/);
+  assert.match(html,/Preserve log/);
+  assert.match(html,/Resource Timing/);
+  assert.match(html,/not (?:every|a security certification)/i);
+ }
+ assert.match(read('src/network-audit.js'),/getEntriesByType\('resource'\)/);
+});
+test('offline version prominently identifies local mode and enforces restrictive CSP',()=>{
+ const html=read('downloads/har-analyser.html');
+ assert.match(html,/OFFLINE EDITION · SELF-CONTAINED · NO CONNECTION REQUIRED/);
+ assert.match(html,/connect-src 'none'/);
+ assert.match(html,/default-src 'none'/);
+ assert.match(html,/worker-src blob:/);
+ assert.match(html,/\[data-edition="offline"\]/);
+});
