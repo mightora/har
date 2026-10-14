@@ -1,0 +1,21 @@
+# Mightora HAR Analyser
+> Free open-source HTTP Archive (HAR) analysis that processes captures locally in a browser. Official site: https://har.mightora.io/
+
+## Key resources
+- [HAR analyser](https://har.mightora.io/): Inspect HTTP response errors, slow requests, wait times, size, and latency locally. No HAR upload endpoint.
+- [How to open and analyse a HAR file](https://har.mightora.io/guides/how-to-analyse-har.html): Capture network traces in browser Developer Tools and troubleshoot them.
+- [HAR timing fields explained](https://har.mightora.io/guides/har-performance-timings.html): DNS, connect, SSL/TLS, wait time, receive time, and P95.
+- [Run the analyser offline](https://har.mightora.io/guides/offline-har-analysis.html): Use a downloadable self-contained HTML file with no runtime internet requirements.
+- [HAR security and safe sharing](https://har.mightora.io/guides/har-security-privacy.html): HAR files may contain bearer tokens, cookies, PII and request/response contents.
+- [Download offline ZIP](https://har.mightora.io/downloads/mightora-har-offline.zip): Includes har-analyser.html, README.txt and LICENSE.txt.
+- [Source code](https://github.com/mightora/har): MIT-licensed public GitHub repository.
+
+## Important details
+- Processing is local. The web edition uses a browser Web Worker and external Mightora UI resources; the offline HTML embeds all dependencies and uses restrictive content security policy.
+- Original HAR captures can contain secrets. Do not share raw HARs before reviewing and redacting them.
+- Sanitised JSON exports do not contain raw headers, cookies or response bodies, but may retain hostnames and identifying URL paths.
+- Host aggregate durations are cumulative request durations, not page load time.
+- P95 is calculated from durations in the loaded HAR sample, not across production traffic.
+
+## About
+Maintained under the Mightora brand. Created by TechTweedie. UK English editorial content.
