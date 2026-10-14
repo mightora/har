@@ -1,0 +1,2 @@
+import {analyseHAR} from './analysis.js';
+self.onmessage=async({data})=>{try{const file=data?.file;if(!(file instanceof Blob))throw Error('Select a valid HAR file.');if(file.size>50*1024*1024)throw Error('File exceeds 50 MB limit.');const raw=await file.text();const report=analyseHAR(JSON.parse(raw.replace(/^\uFEFF/,'')));self.postMessage({ok:true,report});}catch(e){self.postMessage({ok:false,error:String(e?.message||'Invalid HAR').slice(0,180)});}};
