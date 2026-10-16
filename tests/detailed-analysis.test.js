@@ -75,3 +75,24 @@ test('waterfall does not turn missing negative timings into fake zero values',()
  assert.equal(result.entries[0].timings.dns,null);
  assert.equal(result.entries[0].timings.wait,80);
 });
+
+test('HTTP header evidence reports safe indicators and never captured header values',()=>{
+ const capture={log:{entries:[make({
+  request:{url:'https://example.com/ok',method:'GET',headers:[{name:'Authorization',value:'Bearer VERY_PRIVATE'}]},
+  response:{status:200,headers:[
+   {name:'Content-Encoding',value:'gzip'},
+   {name:'Cache-Control',value:'private, max-age=3600 SECRET_CACHE'},
+   {name:'Strict-Transport-Security',value:'max-age=31536000'},
+   {name:'Content-Security-Policy',value:"default-src 'self'"},
+   {name:'Access-Control-Allow-Origin',value:'https://INTERNAL_PRIVATE.example'}
+  ],bodySize:100}
+ })]}};
+ const result=analyseHAR(capture),flags=result.entries[0].headerSignals;
+ assert.equal(flags.compression,'gzip');
+ assert.equal(flags.hasCacheControl,true);
+ assert.equal(flags.hasStrictTransportSecurity,true);
+ assert.equal(flags.hasContentSecurityPolicy,true);
+ assert.equal(flags.hasAccessControlAllowOrigin,true);
+ const raw=JSON.stringify(result);
+ for(const secret of ['VERY_PRIVATE','SECRET_CACHE','INTERNAL_PRIVATE','31536000'])assert.equal(raw.includes(secret),false);
+});
