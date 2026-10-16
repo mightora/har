@@ -57,3 +57,21 @@ test('sanitised URL removes query values, user details and invalid protocols',()
  assert.equal(safeURL('https://user:password@example.com/private/123456789?token=secret#fragment'),'https://example.com/private/[redacted]');
  assert.equal(safeURL('file:///Users/someone/data'),'[non-web URL]');
 });
+
+test('page milestones are distinct from request timings and omit page titles',()=>{
+ const capture={log:{pages:[{id:'internal-session-SECRET',title:'TOP SECRET URL',startedDateTime:'2026-10-16T07:00:00Z',pageTimings:{onContentLoad:750,onLoad:2200}}],entries:[{...make(),pageref:'internal-session-SECRET'}]}};
+ const result=analyseHAR(capture);
+ assert.equal(result.pageTimings[0].domContentLoadedMs,750);
+ assert.equal(result.pageTimings[0].loadMs,2200);
+ assert.equal(result.pageTimings[0].requests,1);
+ const output=JSON.stringify(result);
+ assert.equal(output.includes('internal-session-SECRET'),false);
+ assert.equal(output.includes('TOP SECRET URL'),false);
+});
+test('waterfall does not turn missing negative timings into fake zero values',()=>{
+ const capture={log:{entries:[make({timings:{blocked:-1,dns:-1,ssl:-1,wait:80,receive:20},time:100})]}};
+ const result=analyseHAR(capture);
+ assert.equal(result.entries[0].timings.blocked,null);
+ assert.equal(result.entries[0].timings.dns,null);
+ assert.equal(result.entries[0].timings.wait,80);
+});
