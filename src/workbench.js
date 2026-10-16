@@ -140,7 +140,10 @@ function inspect(id){
  add(root,'h4','Privacy-safe request flags');
  const flags=node('div',undefined,'wb-flags');
  for(const [name,v] of [['Has cookies',e.hasCookies],['Has query string',e.hasQueryParams],['Request body present',e.hasRequestBody],['Response body present',e.hasResponseBody],['Response cookies',e.hasSetCookie],['Redirect',e.redirect],['Cache evidence',e.cacheHit]])add(flags,'span',name+': '+(v?'Yes':'No'));
- root.append(flags);const b=node('button','View sanitised JSON','secondary');b.addEventListener('click',()=>{$('wb-json-kind').value='selected';switchView('json');});root.append(b);
+ root.append(flags);add(root,'h4','HTTP header evidence (values never displayed)');
+ const signals=node('div',undefined,'wb-timing');
+ for(const [name,value] of Object.entries(e.headerSignals||{}))signals.append(kpi(name.replace(/([A-Z])/g,' $1'),typeof value==='boolean'?(value?'Present':'Not recorded'):value));
+ root.append(signals);const b=node('button','View sanitised JSON','secondary');b.addEventListener('click',()=>{$('wb-json-kind').value='selected';switchView('json');});root.append(b);
  $('wb-inspector').hidden=false;$('wb-inspector').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function jsonData(){
