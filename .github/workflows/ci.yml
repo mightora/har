@@ -10,5 +10,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Validate JavaScript
+        run: |
+          node --check src/analysis.js
+          node --check src/workbench.js
+          node --check src/app.js
+          node --check src/network-audit.js
+          node --check src/worker.js
+          node --check scripts/build-offline.mjs
+      - name: Generate reproducible offline edition
+        run: |
+          node scripts/build-offline.mjs
+          python3 scripts/package-offline.py
       - run: npm test
-      - run: node --check src/app.js && node --check src/worker.js && node --check src/analysis.js
