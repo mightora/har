@@ -18,16 +18,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - uses: actions/configure-pages@v5
-      - name: Package updated standalone HTML as a ZIP
+      - name: Build offline HTML and ZIP from shared code
         run: |
-          python3 - <<'PY'
-          from zipfile import ZipFile, ZIP_DEFLATED
-          with ZipFile("downloads/mightora-har-offline.zip", "w", compression=ZIP_DEFLATED) as z:
-              z.write("downloads/har-analyser.html", arcname="har-analyser.html")
-              z.write("downloads/README-OFFLINE.txt", arcname="README.txt")
-              z.write("LICENSE", arcname="LICENSE.txt")
-          PY
+          node scripts/build-offline.mjs
+          python3 scripts/package-offline.py
+      - name: Run regression tests before deploying
+        run: npm test
       - uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
