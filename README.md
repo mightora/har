@@ -31,3 +31,29 @@ Download [the self-contained HTML ZIP](https://har.mightora.io/downloads/mightor
 The website includes separate HAR troubleshooting, network timing, security/privacy and offline-use guides in `guides/`, a sitemap using `har.mightora.io`, and structured FAQ and how-to answers. Automated tests check the download package and SEO files on every commit.
 
 **Security note:** Both editions process selected HAR files locally, but even sanitised diagnostic reports can contain identifying hostnames or path information. Do not upload or share a raw HAR without reviewing it.
+\n
+## Detailed troubleshooting workbench
+
+The website and the offline single-file edition now share the same HAR parsing and workbench source. Features include:
+
+- Eight charts: HTTP status classes, individual HTTP response codes, duration histogram, content types, hosts by recorded bytes, HTTP methods, latency percentiles, and page loading milestones when recorded.
+- Network activity timeline and request waterfall (blocked, DNS, connection, send, wait, receive and unspecified time; SSL displayed independently because it can overlap).
+- Request explorer with status/host/type filters, search, sorting, pagination and an inspector.
+- Inspector: safe URL and host, method, HTTP status, MIME category, timestamp, response-size basis, timing phase values and presence flags for cookies/bodies/query parameters (never their values).
+- Diagnostics for HTTP errors, long response waits, DNS/connection delays, slow requests and large responses, with suggested investigation steps.
+- Expandable JSON tree and formatted JSON views of sanitised summary, capture/page metadata, hosts, findings and selected requests, plus CSV and JSON downloads.
+- An entirely synthetic sample HAR to explore the features without exposing real captures.
+
+**Important limitations:** HAR fields are captured by the browser and can be missing or inconsistent. -1 timings are unknown, not zero. A transfer-body-content size estimate may include decoded rather than wire bytes. Multiple requests overlap, so adding their durations does not measure full page load. Findings are heuristics, not verified root causes.
+
+## Reproducible offline edition
+
+The source files under \`src/\` are the single source of truth for both editions. To rebuild:
+
+\`\`\`sh
+node scripts/build-offline.mjs
+python3 scripts/package-offline.py
+npm test
+\`\`\`
+
+The CI and GitHub Pages workflows execute these commands so downloads stay in sync with the website. The portable HTML includes all styles, app code, network checker and logo locally, applies a restrictive Content Security Policy, and runs directly using \`file://\` (with a local parser fallback when blob workers are unavailable).
