@@ -86,7 +86,8 @@ export function analyseHAR(har){
    serverWaitMs:timing.wait, requestHeadersBytes:elapsedPart(req.headersSize),
    responseHeadersBytes:elapsedPart(r.headersSize),
    redirect:status>=300&&status<400,
-   cacheHit:status===304||Boolean(item.cache?.afterRequest?.expires),
+   cacheHit:status===304,
+   hasCacheMetadata:Boolean(item.cache?.beforeRequest||item.cache?.afterRequest),
    hasCookies:Array.isArray(req.cookies)&&req.cookies.length>0,
    hasQueryParams:Array.isArray(req.queryString)&&req.queryString.length>0,
    hasRequestBody:Boolean(req.postData),
@@ -117,6 +118,14 @@ export function analyseHAR(har){
  const statuses=breakdown(entries,'statusGroup');
  const responseCodes=breakdown(entries,'status');
  const latest=entries.reduce((m,e)=>Math.max(m,(e.offsetMs??0)+e.elapsed),0);
+ const rawPages=Array.isArray(har.log.pages)?har.log.pages:[];
+ const pageTimings=rawPages.slice(0,100).map((p,i)=>({
+  page:i+1,
+  domContentLoadedMs:elapsedPart(p?.pageTimings?.onContentLoad),
+  loadMs:elapsedPart(p?.pageTimings?.onLoad),
+  startTime:period(p?.startedDateTime)!==null?new Date(Date.parse(p.startedDateTime)).toISOString():null,
+  requests:entries.filter(e=>har.log.entries[e.id-1]?.pageref===p?.id).length
+ }));
  const summary={
   requests:entries.length,hosts:hosts.length,errors:entries.filter(e=>e.status>=400||!e.status).length,
   redirects:entries.filter(e=>e.redirect).length,
@@ -130,7 +139,7 @@ export function analyseHAR(har){
   maxMs:durations.at(-1)||0,slowRequests:entries.filter(e=>e.elapsed>=3000).length
  };
  return {
-  summary,entries,hosts,mimes,methods,statuses,responseCodes,histogram,
+  summary,entries,hosts,mimes,methods,statuses,responseCodes,histogram,pageTimings,
   issues:issues.slice(0,3000),issueCount:issues.length,
   metadata:{format:'HAR 1.2',browser:/^(Chrome|Chromium|Firefox|Safari|Edge|Microsoft Edge)$/i.test(String(har.log.browser?.name||''))?String(har.log.browser.name):'Other / unknown',browserVersion:/^\d+(?:\.\d+){0,4}$/.test(String(har.log.browser?.version||''))?String(har.log.browser.version):'Unknown',
    pages:Array.isArray(har.log.pages)?har.log.pages.length:0,
