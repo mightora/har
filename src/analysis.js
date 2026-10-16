@@ -58,6 +58,28 @@ function grouped(items,key){
  return [...map.values()].map(x=>({...x,avgMs:x.requests?x.totalMs/x.requests:0})).sort((a,b)=>b.bytes-a.bytes);
 }
 function breakdown(items,key){const map={};for(const x of items)map[x[key]||'Unknown']=(map[x[key]||'Unknown']||0)+1;return Object.entries(map).map(([label,count])=>({label,count})).sort((a,b)=>b.count-a.count);}
+
+function headerSignals(request,response){
+ const req=Array.isArray(request.headers)?request.headers:[];
+ const res=Array.isArray(response.headers)?response.headers:[];
+ const has=(key)=>res.some(h=>String(h?.name||'').toLowerCase()===key);
+ const encoding=res.find(h=>String(h?.name||'').toLowerCase()==='content-encoding')?.value;
+ const e=String(encoding||'').toLowerCase().trim();
+ const compression=['br','gzip','deflate','zstd','identity'].includes(e)?e:'Not recorded / unknown';
+ return {
+  requestHeaderCount:req.length,responseHeaderCount:res.length,
+  compression,
+  hasContentSecurityPolicy:has('content-security-policy'),
+  hasStrictTransportSecurity:has('strict-transport-security'),
+  hasAccessControlAllowOrigin:has('access-control-allow-origin'),
+  hasCacheControl:has('cache-control'),
+  hasETag:has('etag'),
+  hasLastModified:has('last-modified'),
+  hasVary:has('vary'),
+  hasContentEncoding:has('content-encoding')
+ };
+}
+
 export function analyseHAR(har){
  if(!har||!Array.isArray(har.log?.entries))throw Error('Invalid HAR: expected log.entries array.');
  if(har.log.entries.length>20000)throw Error('Maximum 20,000 requests per file.');
@@ -79,6 +101,7 @@ export function analyseHAR(har){
    id:i+1,url:path,host:safeHost(raw),method,status,
    statusGroup:statusGroup(status),
    protocol:trim(r.httpVersion||req.httpVersion||'unknown',32),
+   headerSignals:headerSignals(req,r),
    mime:mimeGroup(r.content?.mimeType),elapsed,
    offsetMs:started!==null&&origin!==null?Math.max(0,started-origin):null,
    startTime:started!==null?new Date(started).toISOString():null,
