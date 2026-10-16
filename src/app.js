@@ -1,8 +1,29 @@
-let report=null,worker=null;const $=id=>document.getElementById(id),fmt=n=>Number(n||0).toLocaleString('en-GB'),ms=n=>fmt(Math.round(n))+' ms',size=n=>n>=1048576?(n/1048576).toFixed(2)+' MB':n>=1024?(n/1024).toFixed(1)+' KB':fmt(n)+' B';
-function add(parent,tag,value,cls){const el=document.createElement(tag);if(cls)el.className=cls;el.textContent=String(value);parent.append(el);return el}
-function render(){if(!report)return;$('results').hidden=false;const s=report.summary;$('metrics').replaceChildren();for(const [k,v] of [['Requests',fmt(s.requests)],['Transferred',size(s.bytes)],['Average duration',ms(s.avgMs)],['P95 duration',ms(s.p95Ms)],['Errors',fmt(s.errors)],['Hosts',fmt(s.hosts)]]){const c=add($('metrics'),'div','','metric');add(c,'span',k);add(c,'strong',v)}$('hosts').replaceChildren();for(const h of report.hosts.slice(0,15))add($('hosts'),'li',h.host+' · '+fmt(h.count)+' requests · '+size(h.bytes)+' · '+ms(h.totalMs));$('issues').replaceChildren();for(const issue of report.issues.slice(0,30))add($('issues'),'li','Request '+issue.request+': '+issue.reason);$('issue-count').textContent=fmt(report.issueCount)+' findings (first 30 shown)';filter()}
-function filter(){if(!report)return;const q=$('search').value.trim().toLowerCase(),mode=$('status').value;const found=report.entries.filter(e=>(!q||(e.url+' '+e.method+' '+e.status+' '+e.host).toLowerCase().includes(q))&&(!mode||(mode==='error'?(e.status>=400||!e.status):e.elapsed>3000)));const fragment=document.createDocumentFragment();for(const e of found.slice(0,300)){const tr=document.createElement('tr');for(const value of [e.method,e.status||'—',e.url,ms(e.elapsed),size(e.bytes),ms(e.wait)])add(tr,'td',value);fragment.append(tr)}$('rows').replaceChildren(fragment);$('row-count').textContent='Showing '+Math.min(300,found.length)+' of '+fmt(found.length)+' matching requests'}
-function clear(){worker?.terminate();worker=null;report=null;$('results').hidden=true;$('file').value='';$('status-text').textContent='No HAR data loaded.'}
-$('file').addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;clear();if(!/\.har$/i.test(file.name)){$('status-text').textContent='Please choose a .har file.';return}if(file.size>50*1024*1024){$('status-text').textContent='Maximum 50 MB.';return}$('status-text').textContent='Analysing locally…';worker=new Worker(new URL('./worker.js',import.meta.url),{type:'module'});worker.onmessage=({data})=>{if(data.ok){report=data.report;render();$('status-text').textContent='Analysed locally. No HAR data uploaded.'}else $('status-text').textContent='Analysis failed: '+data.error;worker?.terminate();worker=null};worker.onerror=()=>{$('status-text').textContent='Unexpected analysis error.';worker?.terminate();worker=null};worker.postMessage({file})});
-$('clear').addEventListener('click',clear);$('search').addEventListener('input',filter);$('status').addEventListener('change',filter);
-$('export').addEventListener('click',()=>{if(!report)return;const url=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='mightora-har-sanitised-report.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+/* Online analyser: HAR parsed in a dedicated local Web Worker. */
+let worker=null;
+const file=document.getElementById('file'),status=document.getElementById('status-text');
+function clear(){
+ if(worker){worker.terminate();worker=null;}
+ window.MightoraWorkbench?.clear();
+ file.value='';
+ status.textContent='No HAR data loaded.';
+}
+document.getElementById('clear').addEventListener('click',clear);
+file.addEventListener('change',()=>{
+ const picked=file.files?.[0];if(!picked)return;
+ if(worker){worker.terminate();worker=null;}
+ window.MightoraWorkbench?.clear();
+ if(!/\.har$/i.test(picked.name)){status.textContent='Select a .har file.';return;}
+ if(picked.size>50*1024*1024){status.textContent='Maximum file size is 50 MiB.';return;}
+ status.textContent='Building detailed report locally…';
+ try{
+  worker=new Worker(new URL('./worker.js',import.meta.url),{type:'module'});
+  worker.onmessage=({data})=>{
+   worker?.terminate();worker=null;
+   if(!data.ok){status.textContent='Could not analyse HAR: '+data.error;return;}
+   window.MightoraWorkbench.show(data.report);
+   status.textContent='Detailed analysis complete. Raw HAR data has not been uploaded.';
+  };
+  worker.onerror=()=>{worker?.terminate();worker=null;status.textContent='Worker error while reading HAR. Try another file.';};
+  worker.postMessage({file:picked});
+ }catch(e){status.textContent='Unable to start local analyser: '+String(e.message||e);}
+});
