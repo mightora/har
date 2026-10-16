@@ -77,7 +77,7 @@ export function analyseHAR(har){
   const path=safeURL(raw);
   const e={
    id:i+1,url:path,host:safeHost(raw),method,status,
-   statusGroup:statusGroup(status),statusText:trim(r.statusText,70),
+   statusGroup:statusGroup(status),
    protocol:trim(r.httpVersion||req.httpVersion||'unknown',32),
    mime:mimeGroup(r.content?.mimeType),elapsed,
    offsetMs:started!==null&&origin!==null?Math.max(0,started-origin):null,
@@ -132,7 +132,7 @@ export function analyseHAR(har){
  return {
   summary,entries,hosts,mimes,methods,statuses,responseCodes,histogram,
   issues:issues.slice(0,3000),issueCount:issues.length,
-  metadata:{format:'HAR 1.2',browser:trim(har.log.browser?.name,60),browserVersion:trim(har.log.browser?.version,25),
+  metadata:{format:'HAR 1.2',browser:/^(Chrome|Chromium|Firefox|Safari|Edge|Microsoft Edge)$/i.test(String(har.log.browser?.name||''))?String(har.log.browser.name):'Other / unknown',browserVersion:/^\d+(?:\.\d+){0,4}$/.test(String(har.log.browser?.version||''))?String(har.log.browser.version):'Unknown',
    pages:Array.isArray(har.log.pages)?har.log.pages.length:0,
    captureStart:origin!==null?new Date(origin).toISOString():null,
    privacy:'Sanitised output. Hostnames and some URL paths can still identify services or people. Review exports before sharing.',
