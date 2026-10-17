@@ -28,6 +28,10 @@ jobs:
           python3 scripts/package-offline.py
       - name: Run regression tests before deploying
         run: npm test
+      - name: Bundle shared Mightora footer
+        uses: mightora/shared-ui/.github/actions/sync-footer@main
+        with:
+          output-directory: .
       - uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
